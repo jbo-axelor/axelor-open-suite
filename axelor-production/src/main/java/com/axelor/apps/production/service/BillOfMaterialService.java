@@ -66,4 +66,6 @@ public interface BillOfMaterialService {
 
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
+
+  int countComponents(long billOfMaterialId) throws AxelorException;
 }

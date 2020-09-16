@@ -388,4 +388,14 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     return newBom;
   }
+
+  public int countComponents(long billOfMaterialId) throws AxelorException {
+    BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
+    Set<BillOfMaterial> components = billOfMaterial.getBillOfMaterialSet();
+    BigDecimal bd = new BigDecimal(0);
+    for (BillOfMaterial billOfMaterial2 : components) {
+     bd = bd.add(billOfMaterial2.getQty());
+    }
+    return bd.toBigInteger().intValue();
+  }
 }
