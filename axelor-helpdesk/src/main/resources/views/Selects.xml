@@ -15,6 +15,7 @@
 		<option value="1">In progress</option>
 		<option value="2">Resolved</option>
 		<option value="3">Closed</option>
+		<option value="4">Rejected</option>
 	</selection>
 	
 	<selection name="helpdesk.ticket.progress.select">
