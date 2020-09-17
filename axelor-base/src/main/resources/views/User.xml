@@ -121,10 +121,10 @@
 	              <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
 	              <label name="passwordPatternDescriptionLabel" css="label-danger"/>
 	            </panel>
-	            <panel name="passwordOptionsPanel" showIf="code != $user">
+	            <panel name="passwordOptionsPanel" showIf="code != $user" itemSpan="4">
 	              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
 	              <field name="sendEmailUponPasswordChange"/>
-	              <field name="forcePasswordChange"/>
+								<field name="forcePasswordChange"/>
 	            </panel>
 	          </panel>
 	        </panel>
@@ -336,7 +336,7 @@
     <action-method name="action-user-method-generate-random-passwords">
     	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
     </action-method>
-    
+
     <action-view name="action-user-view-show-all-permissions" title="All permissions" model="com.axelor.auth.db.Permission">
    		<view name="permission-grid" type="grid"/>
    		<view name="permission-form" type="form"/>

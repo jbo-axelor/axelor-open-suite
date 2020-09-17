@@ -737,10 +737,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       throws AxelorException {
     for (OperationOrder operationOrder : operationOrders) {
 
-      WorkCenter workCenter = operationOrder.getMachineWorkCenter();
-      if (workCenter == null) {
-        workCenter = operationOrder.getWorkCenter();
-      }
+      WorkCenter workCenter = operationOrder.getWorkCenter();
       if (workCenter == null) {
         continue;
       }

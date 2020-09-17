@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Function;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SyncContact;
 import com.axelor.apps.base.db.SyncContactHistoric;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -219,9 +218,7 @@ public class SyncContactService {
 
   protected void setDefaultPartnerValue(Partner partner) {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    Sequence partnerSeq =
-        Beans.get(SequenceRepository.class).findByCode(SequenceRepository.PARTNER);
-    String seq = Beans.get(SequenceService.class).getSequenceNumber(partnerSeq);
+    String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);
