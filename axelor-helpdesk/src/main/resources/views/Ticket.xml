@@ -166,15 +166,15 @@
 	 </kanban>
 	 
 	<chart name="ticket-chart" title="Division of tickets by state">
-		<dataset type="jpql">
+		<dataset type="sql">
 			 <![CDATA[
 			SELECT
-				self.statusSelect AS state,
-				CAST(COUNT(self)/(SELECT CAST(COUNT(self) AS DECIMAL(5,2)) FROM Ticket AS self)*100 AS DECIMAL(5,2)) as sum
+				self.status_select AS state,
+				CAST(COUNT(*)/(SELECT CAST(COUNT(*) AS DECIMAL(5,2)) FROM helpdesk_ticket)*100 AS DECIMAL(5,2)) as sum
 			FROM
-				Ticket AS self
+				helpdesk_ticket AS self
 			GROUP BY
-				self.statusSelect
+				self.status_select
     	    ]]>
 		</dataset>
 		<category key="state" type="text"/>
