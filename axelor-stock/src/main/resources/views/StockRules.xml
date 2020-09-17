@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
-    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect">
+    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect" groupBy="stockLocation">
         <toolbar>
         <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>

@@ -221,4 +221,16 @@ public class BillOfMaterialController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void countComponents(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      response.setValue(
+          "$totalNumberOfComponents",
+          Integer.toString(
+              Beans.get(BillOfMaterialService.class).countComponents(billOfMaterial.getId())));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
