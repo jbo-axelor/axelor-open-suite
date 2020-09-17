@@ -44,162 +44,193 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class BillOfMaterialController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
 
-	public void computeCostPrice(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void computeCostPrice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
-		CostSheet costSheet = Beans.get(CostSheetService.class).computeCostPrice(
-				Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId()),
-				CostSheetService.ORIGIN_BILL_OF_MATERIAL, null);
+    CostSheet costSheet =
+        Beans.get(CostSheetService.class)
+            .computeCostPrice(
+                Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId()),
+                CostSheetService.ORIGIN_BILL_OF_MATERIAL,
+                null);
 
-		response.setView(ActionView.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
-				.model(CostSheet.class.getName()).param("popup", "true").param("show-toolbar", "false")
-				.param("show-confirm", "false").param("popup-save", "false")
-				.add("grid", "cost-sheet-bill-of-material-grid").add("form", "cost-sheet-bill-of-material-form")
-				.context("_showRecord", String.valueOf(costSheet.getId())).map());
+    response.setView(
+        ActionView.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
+            .model(CostSheet.class.getName())
+            .param("popup", "true")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .add("grid", "cost-sheet-bill-of-material-grid")
+            .add("form", "cost-sheet-bill-of-material-form")
+            .context("_showRecord", String.valueOf(costSheet.getId()))
+            .map());
 
-		response.setReload(true);
-	}
+    response.setReload(true);
+  }
 
-	public void updateProductCostPrice(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void updateProductCostPrice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
-		Beans.get(BillOfMaterialService.class)
-				.updateProductCostPrice(Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId()));
+    Beans.get(BillOfMaterialService.class)
+        .updateProductCostPrice(
+            Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId()));
 
-		response.setReload(true);
-	}
+    response.setReload(true);
+  }
 
-	public void checkOriginalBillOfMaterial(ActionRequest request, ActionResponse response) {
+  public void checkOriginalBillOfMaterial(ActionRequest request, ActionResponse response) {
 
-		BillOfMaterialRepository billOfMaterialRepository = Beans.get(BillOfMaterialRepository.class);
-		BillOfMaterial billOfMaterial = billOfMaterialRepository
-				.find(request.getContext().asType(BillOfMaterial.class).getId());
+    BillOfMaterialRepository billOfMaterialRepository = Beans.get(BillOfMaterialRepository.class);
+    BillOfMaterial billOfMaterial =
+        billOfMaterialRepository.find(request.getContext().asType(BillOfMaterial.class).getId());
 
-		List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
-		BillOfMaterialSet = billOfMaterialRepository.all().filter("self.originalBillOfMaterial = :origin")
-				.bind("origin", billOfMaterial).fetch();
-		String message;
+    List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
+    BillOfMaterialSet =
+        billOfMaterialRepository
+            .all()
+            .filter("self.originalBillOfMaterial = :origin")
+            .bind("origin", billOfMaterial)
+            .fetch();
+    String message;
 
-		if (!BillOfMaterialSet.isEmpty()) {
+    if (!BillOfMaterialSet.isEmpty()) {
 
-			String existingVersions = "";
-			for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
-				existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
-			}
-			message = String.format(I18n.get(
-					"This bill of materials already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
-					existingVersions);
-		} else {
-			message = I18n.get("Do you really wish to create a new version of this bill of materials ?");
-		}
+      String existingVersions = "";
+      for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
+        existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
+      }
+      message =
+          String.format(
+              I18n.get(
+                  "This bill of materials already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
+              existingVersions);
+    } else {
+      message = I18n.get("Do you really wish to create a new version of this bill of materials ?");
+    }
 
-		response.setAlert(message);
-	}
+    response.setAlert(message);
+  }
 
-	public void generateNewVersion(ActionRequest request, ActionResponse response) {
+  public void generateNewVersion(ActionRequest request, ActionResponse response) {
 
-		BillOfMaterial billOfMaterial = Beans.get(BillOfMaterialRepository.class)
-				.find(request.getContext().asType(BillOfMaterial.class).getId());
+    BillOfMaterial billOfMaterial =
+        Beans.get(BillOfMaterialRepository.class)
+            .find(request.getContext().asType(BillOfMaterial.class).getId());
 
-		BillOfMaterial copy = Beans.get(BillOfMaterialService.class).generateNewVersion(billOfMaterial);
+    BillOfMaterial copy = Beans.get(BillOfMaterialService.class).generateNewVersion(billOfMaterial);
 
-		response.setView(ActionView.define("Bill of materials").model(BillOfMaterial.class.getName())
-				.add("form", "bill-of-material-form").add("grid", "bill-of-material-grid")
-				.param("search-filters", "bill-of-material-filters")
-				.domain("self.defineSubBillOfMaterial = true AND self.personalized = false")
-				.context("_showRecord", String.valueOf(copy.getId())).map());
-	}
+    response.setView(
+        ActionView.define("Bill of materials")
+            .model(BillOfMaterial.class.getName())
+            .add("form", "bill-of-material-form")
+            .add("grid", "bill-of-material-grid")
+            .param("search-filters", "bill-of-material-filters")
+            .domain("self.defineSubBillOfMaterial = true AND self.personalized = false")
+            .context("_showRecord", String.valueOf(copy.getId()))
+            .map());
+  }
 
-	public void validateProdProcess(ActionRequest request, ActionResponse response) {
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-		if (billOfMaterial != null && billOfMaterial.getProdProcess() != null) {
-			if (billOfMaterial.getProdProcess().getIsConsProOnOperation()) {
-				try {
-					Beans.get(ProdProcessService.class).validateProdProcess(billOfMaterial.getProdProcess(),
-							billOfMaterial);
-				} catch (AxelorException e) {
-					TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-				}
-			}
-		}
-	}
+  public void validateProdProcess(ActionRequest request, ActionResponse response) {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    if (billOfMaterial != null && billOfMaterial.getProdProcess() != null) {
+      if (billOfMaterial.getProdProcess().getIsConsProOnOperation()) {
+        try {
+          Beans.get(ProdProcessService.class)
+              .validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+        } catch (AxelorException e) {
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        }
+      }
+    }
+  }
 
-	public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-		BillOfMaterialService billOfMaterialService = Beans.get(BillOfMaterialService.class);
-		String language = ReportSettings.getPrintingLocale(null);
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    BillOfMaterialService billOfMaterialService = Beans.get(BillOfMaterialService.class);
+    String language = ReportSettings.getPrintingLocale(null);
 
-		String name = billOfMaterialService.getFileName(billOfMaterial);
+    String name = billOfMaterialService.getFileName(billOfMaterial);
 
-		String fileLink = billOfMaterialService.getReportLink(billOfMaterial, name, language,
-				ReportSettings.FORMAT_PDF);
+    String fileLink =
+        billOfMaterialService.getReportLink(
+            billOfMaterial, name, language, ReportSettings.FORMAT_PDF);
 
-		LOG.debug("Printing " + name);
+    LOG.debug("Printing " + name);
 
-		response.setView(ActionView.define(name).add("html", fileLink).map());
-	}
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
 
-	public void openBomTree(ActionRequest request, ActionResponse response) {
+  public void openBomTree(ActionRequest request, ActionResponse response) {
 
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-		billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-		TempBomTree tempBomTree = Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial);
+    TempBomTree tempBomTree = Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial);
 
-		response.setView(ActionView.define(I18n.get("Bill of materials")).model(TempBomTree.class.getName())
-				.add("tree", "bill-of-material-tree").context("_tempBomTreeId", tempBomTree.getId()).map());
-	}
+    response.setView(
+        ActionView.define(I18n.get("Bill of materials"))
+            .model(TempBomTree.class.getName())
+            .add("tree", "bill-of-material-tree")
+            .context("_tempBomTreeId", tempBomTree.getId())
+            .map());
+  }
 
-	public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
-		try {
-			BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-			billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+  public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-			Beans.get(BillOfMaterialService.class).setBillOfMaterialAsDefault(billOfMaterial);
+      Beans.get(BillOfMaterialService.class).setBillOfMaterialAsDefault(billOfMaterial);
 
-			response.setReload(true);
-		} catch (Exception e) {
-			TraceBackService.trace(e);
-		}
-	}
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
 
-	public void computeName(ActionRequest request, ActionResponse response) {
-		BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+  public void computeName(ActionRequest request, ActionResponse response) {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
-		if (billOfMaterial.getName() == null) {
-			response.setValue("name", Beans.get(BillOfMaterialService.class).computeName(billOfMaterial));
-		}
-	}
+    if (billOfMaterial.getName() == null) {
+      response.setValue("name", Beans.get(BillOfMaterialService.class).computeName(billOfMaterial));
+    }
+  }
 
-	public void addRawMaterials(ActionRequest request, ActionResponse response) {
-		try {
-			BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-			@SuppressWarnings("unchecked")
-			ArrayList<LinkedHashMap<String, Object>> rawMaterials = (ArrayList<LinkedHashMap<String, Object>>) request
-					.getContext().get("rawMaterials");
+  public void addRawMaterials(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      @SuppressWarnings("unchecked")
+      ArrayList<LinkedHashMap<String, Object>> rawMaterials =
+          (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
 
-			if (rawMaterials != null && !rawMaterials.isEmpty()) {
-				Beans.get(BillOfMaterialService.class).addRawMaterials(billOfMaterial.getId(), rawMaterials);
+      if (rawMaterials != null && !rawMaterials.isEmpty()) {
+        Beans.get(BillOfMaterialService.class)
+            .addRawMaterials(billOfMaterial.getId(), rawMaterials);
 
-				response.setReload(true);
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	public void countComponents(ActionRequest request, ActionResponse response) {
-		try {
-			BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-			response.setValue("$totalNumberOfComponents",
-					Integer.toString(Beans.get(BillOfMaterialService.class).countComponents(billOfMaterial.getId())));
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+  public void countComponents(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      response.setValue(
+          "$totalNumberOfComponents",
+          Integer.toString(
+              Beans.get(BillOfMaterialService.class).countComponents(billOfMaterial.getId())));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

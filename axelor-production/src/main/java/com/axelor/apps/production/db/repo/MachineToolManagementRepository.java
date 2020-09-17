@@ -19,7 +19,6 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.production.db.Machine;
-import com.axelor.apps.production.db.MachineTool;
 import com.google.inject.Inject;
 
 public class MachineToolManagementRepository extends MachineRepository {
