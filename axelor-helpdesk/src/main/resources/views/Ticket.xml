@@ -169,11 +169,21 @@
 		<dataset type="sql">
 			 <![CDATA[
 			SELECT
-				self.status_select AS state,
+				_meta._type AS state,
+				self.status_select,
 				CAST(COUNT(*)/(SELECT CAST(COUNT(*) AS DECIMAL(5,2)) FROM helpdesk_ticket)*100 AS DECIMAL(5,2)) as sum
 			FROM
 				helpdesk_ticket AS self
+			RIGHT JOIN
+				(SELECT cast(value as int) AS _select_item, title AS _type 
+				FROM meta_select_item 
+				WHERE select_id IN 
+				(SELECT id FROM meta_select where name='helpdesk.status.select')) AS _meta
+			ON	self.status_select = _meta._select_item
+			WHERE
+				self.status_select NOTNULL
 			GROUP BY
+				_meta._type,
 				self.status_select
     	    ]]>
 		</dataset>
