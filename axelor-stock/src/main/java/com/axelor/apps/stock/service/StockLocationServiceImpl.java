@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -307,5 +309,25 @@ public class StockLocationServiceImpl implements StockLocationService {
             || (!stockConfig.getIsDisplayAccountingValueInPrinting()
                 && !stockConfig.getIsDisplayAgPriceInPrinting()
                 && !stockConfig.getIsDisplaySaleValueInPrinting()));
+  }
+
+  public StockLocation createStockLocation(
+      boolean includeOutOfStock,
+      String name,
+      int typeSelect,
+      Address address,
+      Company company,
+      StockLocation parentStockLocation,
+      Partner partner) {
+
+    StockLocation stockLocation = new StockLocation();
+    stockLocation.setIncludeOutOfStock(includeOutOfStock);
+    stockLocation.setName(name);
+    stockLocation.setTypeSelect(typeSelect);
+    stockLocation.setAddress(address);
+    stockLocation.setCompany(company);
+    stockLocation.setParentStockLocation(parentStockLocation);
+    stockLocation.setPartner(partner);
+    return stockLocation;
   }
 }

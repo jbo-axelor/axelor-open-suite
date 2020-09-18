@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
@@ -71,4 +73,13 @@ public interface StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude);
 
   public boolean isConfigMissing(StockLocation stockLocation, int printType);
+
+  public StockLocation createStockLocation(
+      boolean includeOutOfStock,
+      String name,
+      int typeSelect,
+      Address address,
+      Company company,
+      StockLocation parentStockLocation,
+      Partner partner);
 }
