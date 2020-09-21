@@ -1,0 +1,7 @@
+Sujet;Categorie;Progression;Utilisateur_responsable;Priorite;Date_de_fin;Numero_de_ticket;Client;Duree;Contact;Statut;Date_de_debut;Assigne_a
+Ou télécharger les sources de l'ERP ?;Support technique;100 %;Kevin DEMOERP;Faible;26/02/2018 16:00;TKT0001;GERARD Solutions;3;GERARD Fabrice;Résolu;26/02/2018 14:00;Kevin DEMOERP
+Comment accéder à la doc technique ?;Support technique;100 %;Kevin DEMOERP;Faible;27/02/2018 12:00;TKT0002;MASSON SA;3;MASSON Xavier;Résolu;27/02/2018 09:00;Kevin DEMOERP
+Impossible de se connecter avec le user Admin;Support technique;100 %;Cyril MARCHAL;Élevé;28/02/2018 09:30;TKT0003;123 Services;18;ROCHE Dominique;Résolu;27/02/2018 10:00;Cyril MARCHAL
+Comment rattacher une pièce jointe ?;Support fonctionnel;20 %;Charles DEMOCRM;Moyen;;TKT0004;123 Services;;ROCHE Dominique;En cours;27/02/2018 14:00;Charles DEMOCRM
+Comment effectuer une recherche avancée ?;Support fonctionnel;0 %;Charles DEMOCRM;Élevé;;TKT0005;123 Services;;ROCHE Dominique;Nouveau;28/02/2018 09:00;Charles DEMOCRM
+Comment effectuer une mise à jour en masse d'enregistrements ?;Support fonctionnel;0 %;Kevin DEMOERP;Urgent;;TKT0006;123 Services;;ROCHE Dominique;Nouveau;28/02/2018 09:30;Kevin DEMOERP
