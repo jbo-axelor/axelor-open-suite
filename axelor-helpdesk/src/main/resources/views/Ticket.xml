@@ -90,7 +90,7 @@
 			<button name="startTicketBtn" title="Start" icon="fa-play" hideIf="statusSelect > 0" onClick="save,action-ticket-group-on-start"/>
 			<button name="validateTicketBtn" title="Resolve" icon="fa-check" hideIf="statusSelect > 1" onClick="save,action-ticket-group-on-validate"/>
 			<button name="finishTicketBtn" title="Close" icon="fa-power-off" css="btn-danger" hideIf="statusSelect > 2" onClick="save,action-ticket-group-on-close"/>
-			<button name="rejectTicketBtn" title="Reject" icon="fa-times-circle" hideIf="statusSelect == 4" onClick="action-ticket-reject" />
+			<button name="rejectTicketBtn" title="Reject" icon="fa-times-circle" hideIf="statusSelect == 4" css="btn-danger" onClick="action-ticket-reject" />
 		</panel>
 
 		<panel name="characteristicsPanel" title="Characteristics" sidebar="true" canCollapse="true" readonlyIf="statusSelect == 4">
