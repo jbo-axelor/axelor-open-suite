@@ -330,9 +330,7 @@
 
 	<action-view name="action-view-ticket-grid-type" model="com.axelor.apps.helpdesk.db.Ticket" title="Tickets from same type">
 		<view type="grid" name="ticket-grid"/>
-		<domain>
-		<![CDATA[self.ticketType = :ticketType
-		]]>
+		<domain>self.ticketType = :ticketType
 		</domain>
 		<context name="ticketType" expr="eval: ticketType"/>
 	</action-view>

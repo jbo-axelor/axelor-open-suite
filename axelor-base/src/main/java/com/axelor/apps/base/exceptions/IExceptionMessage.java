@@ -401,4 +401,10 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
   public static final String SERVER_CONNECTION_ERROR = /*$$(*/
       "Unable to connect to Geonames server" /*)*/;
+
+  public static final String COMPANY_MISSING_ERROR = /*$$(*/
+		  "Company is missing in .csv file." /*)*/;
+  
+  public static final String STOCK_LOCATION_NAME_MISSING_ERROR = /*$$(*/
+		  "Name is missing in .csv file." /*)*/;
 }

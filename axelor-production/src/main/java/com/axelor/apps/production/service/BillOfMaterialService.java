@@ -17,15 +17,17 @@
  */
 package com.axelor.apps.production.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 public interface BillOfMaterialService {
 
@@ -67,5 +69,5 @@ public interface BillOfMaterialService {
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
 
-  int countComponents(long billOfMaterialId) throws AxelorException;
+  BigDecimal countComponents(BillOfMaterial billOfMaterial) throws AxelorException;
 }

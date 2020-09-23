@@ -210,4 +210,6 @@ public interface IExceptionMessage {
 
   public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
       "There is more than one line for same product with same tracking number." /*)*/;
+  
+
 }

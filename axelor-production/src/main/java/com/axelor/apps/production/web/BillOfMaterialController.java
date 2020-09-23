@@ -226,9 +226,7 @@ public class BillOfMaterialController {
     try {
       BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
       response.setValue(
-          "$totalNumberOfComponents",
-          Integer.toString(
-              Beans.get(BillOfMaterialService.class).countComponents(billOfMaterial.getId())));
+          "$totalNumberOfComponents",Beans.get(BillOfMaterialService.class).countComponents(billOfMaterial).toString());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

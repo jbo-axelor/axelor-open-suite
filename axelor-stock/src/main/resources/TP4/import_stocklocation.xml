@@ -3,10 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
 
-   <input update="true" file="RepriseEmplacementDeStock.csv" separator="," type="com.axelor.apps.stock.db.StockLocation" call="com.axelor.csv.script.ImportStockLocation:importStockLocation">
-		<bind column="Nom" to="name" />
-        <bind column="Societe" to="company" search="self.name = :Societe" />
-        <bind column="Tiers" to="partner" search="self.name = :Tiers" />
+	<input file="RepriseEmplacementDeStock.csv" search="self.name = :Nom" separator="," type="com.axelor.apps.stock.db.StockLocation" call="com.axelor.csv.script.ImportStockLocation:importStockLocation">
+  		<bind column="Tiers" to="partner" search="self.name = :Tiers" />
         <bind column="Type" to="typeSelect" eval="Type ==~ /^(Interne)$/ ? '1' : (/^(Externe)$/ ? '2' : (/^(Virtuel)$/ ? '3' : null))" />
+  	</input>
+  	
+   <input update="true" file="RepriseEmplacementDeStock.csv" search="self.name = :Nom" separator="," type="com.axelor.apps.stock.db.StockLocation">
+        <bind column="Emplacement_parent" to="parentStockLocation" search="self.name = :Emplacement_parent" if="Emplacement_parent" />
 	</input>
 </csv-inputs>
