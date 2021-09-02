@@ -19,7 +19,9 @@ package com.axelor.apps.production.service.configurator;
 
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
+import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
@@ -37,26 +39,33 @@ import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService {
 
   protected ConfiguratorService configuratorService;
   protected WorkCenterService workCenterService;
   protected AppProductionService appProdService;
+  protected ConfiguratorProdProductService confProdProductService;
 
   @Inject
   public ConfiguratorProdProcessLineServiceImpl(
       ConfiguratorService configuratorService,
       WorkCenterService workCenterService,
-      AppProductionService appProdService) {
+      AppProductionService appProdService,
+      ConfiguratorProdProductService confProdProductService) {
     this.configuratorService = configuratorService;
     this.workCenterService = workCenterService;
     this.appProdService = appProdService;
+    this.confProdProductService = confProdProductService;
   }
 
   @Override
   public ProdProcessLine generateProdProcessLine(
-      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
+      ConfiguratorProdProcessLine confProdProcessLine,
+      boolean isConsProOnOperation,
+      JsonContext attributes)
       throws AxelorException {
     if (confProdProcessLine == null || !checkConditions(confProdProcessLine, attributes)) {
       return null;
@@ -71,6 +80,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
     long durationPerCycle;
+    long timingOfImplementation;
 
     if (confProdProcessLine.getDefNameAsFormula()) {
       Object computedName =
@@ -126,17 +136,19 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       // In order to prevent synchronization issue when switching multiple time management
       // explicit call is made to make sure that the work center group is taken into account
       // Values impacted are : workCenter, minCapacityPerCycle, maxCapacityPerCycle,
-      // durationPerCycle
+      // durationPerCycle, timingOfImplementation
       this.fillMainWorkCenterFromGroup(
           confProdProcessLine, confProdProcessLine.getWorkCenterGroup());
       workCenter = confProdProcessLine.getWorkCenter();
       minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
       maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
       durationPerCycle = confProdProcessLine.getDurationPerCycle();
+      timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
 
     } else {
 
-      // Regular cases for : workCenter, minCapacityPerCycle, maxCapacityPerCycle, durationPerCycle
+      // Regular cases for : workCenter, minCapacityPerCycle, maxCapacityPerCycle, durationPerCycle,
+      // timingOfImplementation
       if (confProdProcessLine.getDefWorkCenterAsFormula()) {
         Object computedWorkCenter =
             configuratorService.computeFormula(
@@ -193,6 +205,16 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       } else {
         durationPerCycle = confProdProcessLine.getDurationPerCycle();
       }
+      if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
+        timingOfImplementation =
+            Long.decode(
+                configuratorService
+                    .computeFormula(
+                        confProdProcessLine.getTimingOfImplementationFormula(), attributes)
+                    .toString());
+      } else {
+        timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
+      }
     }
 
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
@@ -215,6 +237,23 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
+    prodProcessLine.setTimingOfImplementation(timingOfImplementation);
+
+    if (isConsProOnOperation) {
+      List<ConfiguratorProdProduct> confProdProductLines =
+          confProdProcessLine.getConfiguratorProdProductList();
+      if (CollectionUtils.isNotEmpty(confProdProductLines)) {
+        for (ConfiguratorProdProduct confProdProduct : confProdProductLines) {
+          ProdProduct generatedProdProduct =
+              confProdProductService.generateProdProduct(confProdProduct, attributes);
+          if (generatedProdProduct != null) {
+            prodProcessLine.addToConsumeProdProductListItem(generatedProdProduct);
+          }
+        }
+      }
+    }
+
+    configuratorService.fixRelationalFields(prodProcessLine);
 
     return prodProcessLine;
   }
@@ -262,6 +301,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     confProdProcessLine.setMaxCapacityPerCycle(
         workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+    confProdProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**
