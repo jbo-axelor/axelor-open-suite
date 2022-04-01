@@ -1237,13 +1237,22 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
       newPricingLines =
           checkClassificationRule2(
-              newPricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
+              newPricingLines,
+              fieldTypeAndOpList.get(1)[0],
+              fieldTypeAndOpList.get(1)[1],
+              ruleValue2);
       newPricingLines =
           checkClassificationRule3(
-              newPricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
+              newPricingLines,
+              fieldTypeAndOpList.get(2)[0],
+              fieldTypeAndOpList.get(2)[1],
+              ruleValue3);
       newPricingLines =
           checkClassificationRule4(
-              newPricingLines, fieldTypeAndOpList.get(3)[0], fieldTypeAndOpList.get(3)[1], ruleValue4);
+              newPricingLines,
+              fieldTypeAndOpList.get(3)[0],
+              fieldTypeAndOpList.get(3)[1],
+              ruleValue4);
 
     } else if (ruleValue3 != null) {
       newPricingLines =
@@ -1251,10 +1260,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
       newPricingLines =
           checkClassificationRule2(
-              newPricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
+              newPricingLines,
+              fieldTypeAndOpList.get(1)[0],
+              fieldTypeAndOpList.get(1)[1],
+              ruleValue2);
       newPricingLines =
           checkClassificationRule3(
-              newPricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
+              newPricingLines,
+              fieldTypeAndOpList.get(2)[0],
+              fieldTypeAndOpList.get(2)[1],
+              ruleValue3);
 
     } else if (ruleValue2 != null) {
       newPricingLines =
@@ -1262,7 +1277,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
       newPricingLines =
           checkClassificationRule2(
-              newPricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
+              newPricingLines,
+              fieldTypeAndOpList.get(1)[0],
+              fieldTypeAndOpList.get(1)[1],
+              ruleValue2);
 
     } else if (ruleValue1 != null) {
       newPricingLines =
